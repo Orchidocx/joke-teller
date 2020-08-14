@@ -1,4 +1,5 @@
 const button = document.getElementById('button');
+const button2 = document.getElementById('button2');
 const audioElement = document.getElementById('audio');
 
 function tellMe(joke) {
@@ -12,12 +13,12 @@ function tellMe(joke) {
     ssml: false
   });
 }
-
-async function getJokes() {
-  const apiURL = 'https://sv443.net/jokeapi/v2/joke/Programming,Miscellaneous,Pun?blacklistFlags=nsfw,religious,political,racist,sexist';
+const apiURLsrc1 = 'https://sv443.net/jokeapi/v2/joke/Programming?blacklistFlags=nsfw,religious,political,racist,sexist';
+const apiURLsrc2 = 'https://icanhazdadjoke.com';
+async function getJokes(apiURL) {
   let joke;
   try {
-    const response = await fetch(apiURL);
+    const response = await fetch(apiURL, {headers: {'Accept': 'application/json'}});
     const data = await response.json();
     if(data.setup) {
       joke = `${data.setup} ... ${data.delivery}`;
@@ -26,18 +27,25 @@ async function getJokes() {
     }
     // TTS
     tellMe(joke);
-    // Disable button
-    toggleButton();
+    // Toggle button and display media
+    toggleMedia();
   } catch(err) {
     return 'I cannot find a joke right now. Please try again later.';
   }
 }
 
-function toggleButton() {
+function toggleMedia() {
   button.disabled = !button.disabled;
+  button2.disabled = !button2.disabled;
+  audioElement.hidden = !audioElement.hidden;
 }
 
 
 // Event Listeners
-button.addEventListener('click', getJokes);
-audioElement.addEventListener('ended', toggleButton);
+button.addEventListener('click', () => {
+  getJokes(apiURLsrc1);
+});
+button2.addEventListener('click', () => {
+  getJokes(apiURLsrc2);
+});
+audioElement.addEventListener('ended', toggleMedia);
