@@ -37,7 +37,8 @@ async function getJokes(apiURL) {
 function toggleMedia() {
   button.disabled = !button.disabled;
   button2.disabled = !button2.disabled;
-  audioElement.hidden = !audioElement.hidden;
+  // permanently show after first click
+  audioElement.hidden = false;
 }
 
 
